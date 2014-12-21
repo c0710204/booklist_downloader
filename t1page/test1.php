@@ -125,8 +125,25 @@ foreach ($channel as $key => $value)
 	}
 }
 */
-$top=10000;
-$bottom=99999;
+
+$filename="output_sfacg.txt";
+$top=10743;
+$bottom=20000;
+if ($argc==3)
+{
+	$top=$argv[1];
+	$bottom=$argv[2];
+	$filename=$argv[3];
+	//exit(0);
+
+}
+
+
+
+
+
+
+
 $href="http://iosapi.sfacg.com/APP/API/HTML5.ashx?op=noveldetail&nid={i}";
 $linetemplate="{NovelID},{NovelName},{AuthorName},{TypeName},{CharCount},{LastUpdateTime}\n";
 $objlist=array(
@@ -159,7 +176,7 @@ for ($i=$top;$i<=$bottom;$i++)
 	//		echo $k."|".$obj[$k]." \n";
 			$out=str_replace("{".$k."}",$obj[$k],$out);
 		}
-		file_put_contents("output_sfacg.txt", $out,FILE_APPEND);
+		file_put_contents($filename, $out,FILE_APPEND);
 	}
 	else echo "no this book\n";
 	$endtime=time()-$starttime;
