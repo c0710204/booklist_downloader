@@ -5,19 +5,39 @@ include "adapter/sfacg.php";
 use booklist_downloader\adapter;
 function trans($obj)
 {
-$rtn=array();
-$rf = new ReflectionObject($obj);
-foreach ($rf->getProperties() as $value) {
-	$name=$value->name;
-	if (!is_null($obj->$name)) 	$rtn[$name]=$obj->$name;
+	$rtn=array();
+	$rf = new ReflectionObject($obj);
+	foreach ($rf->getProperties() as $value) 
+	{
+		$name=$value->name;
+		if (!is_null($obj->$name)) 	$rtn[$name]=$obj->$name;
+	}
+	return $rtn; 
 }
-return $rtn; 
+
+
+
+
+$len=40;
+function showprogressbar($persent,$len=40)
+{
+	$p=$persent*$len;
+	$bar="|";
+	for ($i1=0; $i1 <=$p-1 ; $i1++) { $bar=$bar.'=';}	
+	$bar=$bar.'>';
+	for ($i1=$p; $i1 <$len ; $i1++) { $bar=$bar.' ';}	
+	$bar=$bar.'|';
+	return $bar;
 }
 
-
-
-
-
+function cleanline()
+{
+	$str="";
+	for ($i=0; $i < 255; $i++) { 
+		$str=sprintf("%s\x08",$str);
+	}
+	return $str;
+}
 $len=30;
 
 $adp=new adapter\sfacg();
@@ -30,24 +50,22 @@ foreach ($channel as $key => $value)
 	
 	//$adp->set_pagecount(2);
 	echo ' | '.$value." |\n";
-	echo $adp->get_pagecount_min()."-";
-	echo $adp->get_pagecount_max()."\n";
+	echo $adp->get_pagecount_min()."-".$adp->get_pagecount_max()."\n";
 	for ($i=$adp->get_pagecount_min(); $i<=$adp->get_pagecount_max() ; $i++) 
 	{ 
-		file_put_contents("php://stdout", $i."\t|");
+		file_put_contents("php://stdout",cleanline());
+		file_put_contents("php://stdout", $i."\t");
+		
+		 $p=($i/$adp->get_pagecount_max());
 
-		 $p=($i*$len/$adp->get_pagecount_max());
-		for ($i1=0; $i1 <$p-1 ; $i1++) { file_put_contents("php://stdout",'=');}	
-		file_put_contents("php://stdout",'>');
-		for ($i1=$p; $i1 <$len ; $i1++) { file_put_contents("php://stdout",' ');}	
-		file_put_contents("php://stdout","|\n");
+		 file_put_contents("php://stdout",showprogressbar($p));
 		//echo $i."\n";
 		$adp->set_pagecount($i);
 		$books=$adp->get_book();
 		foreach ($books as $book) 
 		{
 			//file_put_contents("php://stdout", $book);
-			file_put_contents("output.txt", $book,FILE_APPEND);
+			file_put_contents("output.txt", $book->cvs(),FILE_APPEND);
 			//$book->toString();
 		}
 	}

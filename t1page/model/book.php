@@ -7,7 +7,7 @@ class book
 	public $updatetime;
 	public $author;
 	public $intro;
-	public $ID;
+	public $I;
 	public $site;
 	public $type;
 	/*
@@ -34,4 +34,17 @@ class book
 		//echo ""."\n";
 		return $str;
 	}
+	public function cvs($lfgf=",",$nrfgf="\"")
+	{
+		$str="";
+		$str=$str.$nrfgf.str_replace($nrfgf, '\\'.$nrfgf,$this->title).$nrfgf.$lfgf;
+		$str=$str.$nrfgf.str_replace($nrfgf, '\\'.$nrfgf,$this->type).$nrfgf.$lfgf;
+		$str=$str.$nrfgf.str_replace($nrfgf, '\\'.$nrfgf,$this->count).$nrfgf.$lfgf;
+		$str=$str.$nrfgf.str_replace($nrfgf, '\\'.$nrfgf,$this->updatetime).$nrfgf."\n";
+		//echo ""."\n";
+		//echo ""."\n";
+		//echo ""."\n";
+		//echo ""."\n";
+		return $str;
+	}	
 }
